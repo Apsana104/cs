@@ -1,0 +1,63 @@
+import scipy.stats as s
+
+t=int(input('enter no of treatments'))
+b=int(input('enter no of blocks'))
+
+p=[]
+
+for i in range(t):
+    x=[float(x) for x in input().split(',')]
+    p.append(x)
+
+   
+g=0
+ti2=0
+for i in p:
+    g+=sum(i)
+    ti2+=sum(i)**2
+
+bj2=0
+for i in range (b):
+    s1=0
+    for j in range(t):
+        s1+=p[j][i]
+    bj2+=s1**2
+
+rss=0
+for i in range(t):
+    for j in range(b):
+        rss+=p[i][j]**2
+cf=g**2/(t*b)
+sst=rss-cf
+
+sstr=((1/b)*ti2)-cf
+
+ssb=((1/t)*bj2)-cf
+
+sse=sst-sstr-ssb
+
+mstr=sstr/(t-1)
+msb=ssb/(b-1)
+mse=sse/((t-1)*(b-1))
+ftr=mstr/mse
+fb=msb/mse
+print(ftr,fb)
+if(ftr<1):
+    ftr=1/ftr
+    ftab1=s.f.ppf(1-0.05,((b-1)*(t-1)),(t-1))
+else:
+    ftab1=s.f.ppf(1-0.05,(t-1),((b-1)*(t-1)))
+if(fb<1):
+    fb=1/fb
+    ftab2=s.f.ppf(1-0.05,((b-1)*(t-1)),(b-1))
+else:
+    ftab2=s.f.ppf(1-0.05,(b-1),((b-1)*(t-1)))
+print(ftab1,ftab2)
+if(ftr<ftab1):
+    print('there is no significance diff b/w tr')
+else:
+    print('there is a significance diff b/w tr')
+if(fb<ftab2):
+    print('there is no significance diff b/w bl')
+else:
+    print('there is a significance diff b/w bl')
