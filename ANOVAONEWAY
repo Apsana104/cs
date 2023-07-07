@@ -1,0 +1,44 @@
+import scipy.stats as s
+import numpy as np
+import pandas as pd
+n=int(input('enter no of treatments'))
+tr=[]
+
+for i in range(n):
+    x=[float(x) for x in input().split(',')]
+    x=np.array(x)
+    tr.append(x)
+ti2=tl=0
+g=rss=0
+for i in tr:
+    g+=sum(i)
+    ti2+=sum(i)**2/len(i)
+    rss+=sum(i*i)
+    tl+=len(i)
+cf=g**2/tl
+sst=rss-cf
+sstr=ti2-cf
+sse=sst-sstr
+mstr=sstr/(n-1)
+msse=sse/(tl-n)
+f=mstr/msse
+print(f)
+if(f<=1):
+    f=1/f
+    ftab=s.f.ppf(0.05,(tl-n),(n-1))
+else:
+    ftab=s.f.ppf(1-0.05,(n-1),(tl-n))
+print(ftab)
+if(f<ftab):
+    print('there is no significance difference among the treatments')
+else:
+    print('there is some significance difference among the treatments')
+ANOVA={
+    "SOV":['Treatments','error','total'],
+    "SOS":[sstr,sse,sst],
+    "DOG":[n-1,tl-1,tl-1],
+    "MSOS":[mstr,msse,"--"],
+    "vr":[f,"f(n-1)(tl-1)","--"]
+}
+d=pd.DataFrame(ANOVA)
+print(d)
